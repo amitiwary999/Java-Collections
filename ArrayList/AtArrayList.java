@@ -9,7 +9,7 @@ public class AtArrayList<T> {
         this.listData = DEFAULT_DATA;
     }
 
-    public void indexRangeCheck(int index){
+    private void indexRangeCheck(int index){
         if(index>=listData.length){
             throw new Error("index out of bound");
         }
@@ -23,11 +23,9 @@ public class AtArrayList<T> {
 
     public void addData(int index, T element){
         indexRangeCheck(index);
-        Object[]  tempArraySplitFirst = Arrays.copyOfRange(listData, 0, index);
         Object[] tempArraySplitSecond = Arrays.copyOfRange(listData, index, listData.length);
-        tempArraySplitFirst = Arrays.copyOf(tempArraySplitFirst, tempArraySplitFirst.length + 1);
-        tempArraySplitFirst[index] = element;
-        System.arraycopy(tempArraySplitFirst, 0, listData, 0, index+1);
+        listData = Arrays.copyOf(listData, listData.length + 1);
+        listData[index] = element;
         System.arraycopy(tempArraySplitSecond, 0, listData, index+1, tempArraySplitSecond.length);
     }
 
