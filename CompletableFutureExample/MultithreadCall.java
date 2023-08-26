@@ -69,11 +69,28 @@ public class MultithreadCall {
             int finalI = i;
             futureList.add(CompletableFuture.supplyAsync(() -> getWeatherData(latLong[finalI]), es));
         }
+        /** it block the thread that call the triggerCall function. here join make sure that when all the completable future is completed
+         * then move to next step*/
         CompletableFuture.allOf(futureList.toArray(new CompletableFuture[]{})).join();
 
         for(int i=0; i< latLong.length; i++){
             if(futureList.get(i) != null)
                 System.out.println("resp for " + i +" " + futureList.get(i).join());
         }
+
+        /**
+         * If triggerCall function is invoke from main thread we need to do call on other thread to make sure main thread is not blocked.
+         *         es.submit(() -> {
+         *             CompletableFuture.allOf(futureList.toArray(new CompletableFuture[]{})).join();
+         *             System.out.println("return " + Thread.currentThread().getName()+" "+Thread.currentThread().getId());
+         *             for(int i=0; i< latLong.length; i++){
+         *                 System.out.println("first in the res " + i +" "+Thread.currentThread().getName() +" "+ Thread.currentThread().getId());
+         *                 if(futureList.get(i) != null)
+         *                     System.out.println("resp for " + i +" " + futureList.get(i).join());
+         *             }
+         *             System.out.println("return end " + Thread.currentThread().getName()+" "+Thread.currentThread().getId()+" time " + new Date().getTime());
+         *         });
+         *
+         * */
     }
 }
