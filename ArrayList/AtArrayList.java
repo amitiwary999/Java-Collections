@@ -39,4 +39,11 @@ public class AtArrayList<T> {
         indexRangeCheck(index);
         return (T)listData[index];
     }
+
+    public void delete(int index){
+        indexRangeCheck(index);
+        Object[] tempArraySplitSecond = Arrays.copyOfRange(listData, index+1, listData.length);
+        System.arraycopy(tempArraySplitSecond, 0, listData, index, tempArraySplitSecond.length);
+        listData = Arrays.copyOf(listData, listData.length - 1);
+    }
 }
