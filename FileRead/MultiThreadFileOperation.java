@@ -8,16 +8,9 @@ import java.util.List;
 import java.util.concurrent.*;
 
 public class MultiThreadFileOperation {
-    /** read file using input stream
-     *   // Efficient use of memory
-     *   try (InputStream is = new FileInputStream(largeFileName);
-     *        BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-     *       String line;
-     *       while ((line = br.readLine()) != null) {
-     *           // process one line
-     *       }
-     *   }
-     *   read using multi thread. so that can read very fast and calculate number of words in each line.
+    /**
+     * we tried reading 1M line of file. running on single main thread took 1900 ms.
+     * running in threadpool of 4 took 3600 ms and if used callable and invokeall of executor then it took 4000 ms
      * **/
     public WordAndCountModel readLineWordCount(String line){
         StringBuilder tempStr = new StringBuilder(line);
@@ -94,7 +87,8 @@ public class MultiThreadFileOperation {
         System.out.println("end time thread function " + new Date().getTime());
     }
 
-    public void readFileThread(){
+    /** 2200 if i don't use es, 3300 if i use es in supplyAsync **/
+    public void readFileMultiThread(){
         try (InputStream is = new FileInputStream("/Users/amitt/Desktop/longLineText.txt");
              BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
             String line;
@@ -120,6 +114,31 @@ public class MultiThreadFileOperation {
                     }
                 }
                 System.out.println("end time thread " + new Date().getTime());
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("end time thread function " + new Date().getTime());
+    }
+
+    /** 1800ms*/
+    public void readFileThread(){
+        try {
+            ExecutorService es = Executors.newFixedThreadPool(1);
+            System.out.println("start time thread " + new Date().getTime());
+            InputStream is = new FileInputStream("/Users/amitt/Desktop/longLineText.txt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            es.submit(() -> {
+                String line;
+                while (true) {
+                    try {
+                        if ((line = br.readLine()) == null) break;
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    readLineWordCount(line);
+                }
+                System.out.println("end time thread work " + new Date().getTime());
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
