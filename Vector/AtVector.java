@@ -18,11 +18,18 @@ public class AtVector<E> {
         vectorData = Arrays.copyOf(vectorData, incrCapacity);
     }
 
-    public void add(E e){
+    public synchronized void add(E e){
         if(elementLength == vectorData.length){
             increaseSize();
         }
         vectorData[elementLength] = e;
         elementLength = elementLength + 1;
+    }
+
+    public synchronized void setElement(E e, int index){
+        if(elementLength<=index){
+            throw new Error("index is more then the length of vector");
+        }
+        vectorData[index] = e;
     }
 }
