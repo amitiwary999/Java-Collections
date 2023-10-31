@@ -32,4 +32,8 @@ public class AtVector<E> {
         }
         vectorData[index] = e;
     }
+
+    public synchronized int size(){
+        return elementLength;
+    }
 }
