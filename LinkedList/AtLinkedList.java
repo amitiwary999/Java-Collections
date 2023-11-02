@@ -8,11 +8,45 @@ public class AtLinkedList<E> {
     public AtLinkedList() {
     }
 
-    private void indexRangeCheck(int index){
-        if(index>=size){
-            throw new Error("index out of bound");
+    private void indexPositionCheck(int index){
+        if(index>size){
+            throw new IndexOutOfBoundsException("index out of bound size is " + size);
         }
     }
+
+    private void elementPositionCheck(int index){
+        if(index>=size){
+            throw new IndexOutOfBoundsException("index out of bound, size is " + size);
+        }
+    }
+
+    private void removeFirstItem(){
+        Node temp = firstElement.nextElement;
+        firstElement.nextElement = null;
+        firstElement.element = null;
+        firstElement = temp;
+        if(temp == null) lastElement = null;
+        size--;
+    }
+
+    private void removeItem(int index){
+        Node prev = firstElement;
+        Node cur = firstElement;
+        int count = index;
+        while(count>0){
+            prev = cur;
+            cur = cur.nextElement;
+            count--;
+        }
+        prev.nextElement = cur.nextElement;
+        cur.nextElement = null;
+        cur.element = null;
+        if(index == size-1){
+            lastElement = prev;
+        }
+        size--;
+    }
+
     public void add(E e){
         Node currItem = new Node(e, null);
         if(firstElement == null){
@@ -26,11 +60,11 @@ public class AtLinkedList<E> {
     }
 
     public void add(int index, E e){
-        indexRangeCheck(index);
+        indexPositionCheck(index);
         if(index == 0){
             Node curNode = new Node(e, firstElement);
             firstElement = curNode;
-        } else if(index == size-1){
+        } else if(index == size){
             Node curNode = new Node(e, null);
             lastElement.nextElement = curNode;
             lastElement = curNode;
@@ -47,6 +81,15 @@ public class AtLinkedList<E> {
             prev.nextElement = curNode;
         }
         size++;
+    }
+
+    public void removeElement(int index){
+        elementPositionCheck(index);
+        if(index == 0) {
+            removeFirstItem();
+        } else {
+            removeItem(index);
+        }
     }
 
     public void printElements(){
