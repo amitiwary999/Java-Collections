@@ -92,6 +92,17 @@ public class AtLinkedList<E> {
         }
     }
 
+    public void setElement(E e, int index){
+        elementPositionCheck(index);
+        int count = index;
+        Node temp = firstElement;
+        while(count>0){
+            temp = temp.nextElement;
+            count--;
+        }
+        temp.element = e;
+    }
+
     public void printElements(){
         Node temp = firstElement;
         while(temp != null){
