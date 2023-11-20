@@ -19,4 +19,24 @@ public class Utils {
         }
         return new WordAndCountModel(charVal, tempStr.toString());
     }
+
+    static WordAndCountModel readLineWordCountWithWait(String line) throws InterruptedException {
+        StringBuilder tempStr = new StringBuilder(line);
+        String[] strSplits = tempStr.toString().split("\n");
+        int count = 0;
+        int charVal = 0;
+        for(String strSplit : strSplits){
+            String tempSplitStr = strSplit;
+            char[] charArr = tempSplitStr.toCharArray();
+            for(char charItem : charArr){
+                int charItemIntVal = charItem;
+                charVal += charItemIntVal;
+            }
+            int wordLength = strSplit.length();
+            count += wordLength;
+
+        }
+        Thread.sleep(1);
+        return new WordAndCountModel(charVal, tempStr.toString());
+    }
 }
